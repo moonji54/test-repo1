@@ -1,0 +1,5 @@
+name: 'Soapbox Field Plugins'
+type: module
+description: 'A module to provide additional field types, formatters, and widgets.'
+core_version_requirement: ^8.8.0 || ^9.0 || ^10.0
+package: 'Soapbox'

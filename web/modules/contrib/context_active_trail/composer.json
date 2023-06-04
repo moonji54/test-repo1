@@ -1,0 +1,23 @@
+{
+    "name": "drupal/context_active_trail",
+    "description": "Set the active trail based on context.",
+    "type": "drupal-module",
+    "keywords": ["Drupal", "Context", "Active trail", "Breadcrumbs"],
+    "homepage": "https://www.drupal.org/project/context_active_trail",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Jigar Mehta (jigarius)",
+            "homepage": "https://jigarius.com/",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "drupal/core": "^8.8 || ^9",
+        "drupal/context": "^4.1"
+    },
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/context_active_trail",
+        "source": "https://git.drupalcode.org/project/context_active_trail"
+    }
+}

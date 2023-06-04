@@ -1,0 +1,102 @@
+/*
+    Theme Name: Default Theme by Soapbox
+    Theme URI: http://www.designbysoapbox.com
+    Description: Default Theme by Soapbox
+    Author: Soapbox
+    Version: 2.1
+*/
+
+/*
+    ===============================
+    1. SETTINGS
+    ===============================
+*/
+@import "settings/include-media/include-media";
+@import "settings/colours";
+@import "settings/fonts";
+@import "settings/grid-settings";
+@import "settings/spacing";
+
+/*
+    ===============================
+    2. TOOLS
+    ===============================
+*/
+@import "tools/grid-mixins";
+@import "tools/mixins";
+@import "tools/text-styles";
+
+/*
+    ===============================
+    3. RESET
+    ===============================
+*/
+@import "reset/reset";
+
+/*
+    ===============================
+    4. BASE
+    ===============================
+*/
+@import "base/base";
+
+/*
+    ===============================
+    5. OBJECTS
+    ===============================
+*/
+@import "objects/button";
+@import "objects/card-container";
+@import "objects/container";
+@import "objects/content-from-editor";
+@import "objects/section";
+@import "objects/svg";
+
+/*
+    ===============================
+    6. COMPONENTS
+    ===============================
+*/
+@import "components/breadcrumbs";
+@import "components/call-to-action";
+@import "components/card";
+@import "components/embed";
+@import "components/filter";
+@import "components/footer";
+@import "components/footnotes";
+@import "components/form";
+@import "components/full-width-media";
+@import "components/header";
+@import "components/listing";
+@import "components/header-search";
+@import "components/homepage-banner";
+@import "components/language-links";
+@import "components/learning-block";
+@import "components/local-tasks";
+@import "components/login";
+@import "components/pagination";
+@import "components/main-menu";
+@import "components/mega-nav";
+@import "components/meta-rows";
+@import "components/page-header";
+@import "components/quote";
+@import "components/secondary-menu";
+@import "components/single-content";
+@import "components/single-header";
+@import "components/social-links";
+@import "components/sub-navigation";
+@import "components/table-of-contents";
+@import "components/text-block";
+
+/*
+    ===============================
+    7. TRUMPS
+    ===============================
+*/
+@import "overrides/ckeditor/ckeditor";
+@import "overrides/plugins/perfect-scrollbar";
+@import "overrides/plugins/colorbox";
+@import "overrides/plugins/cookie-banner";
+@import "overrides/print";
+@import "overrides/core/ui-autocomplete";
+@import "overrides/utilities";

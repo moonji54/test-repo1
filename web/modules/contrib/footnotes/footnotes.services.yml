@@ -1,0 +1,3 @@
+services:
+  footnotes.group:
+    class: Drupal\footnotes\FootnotesGroup

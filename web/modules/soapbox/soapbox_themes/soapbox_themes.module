@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_themes.module.
+ */
+
+/**
+ * Include the custom admin css.
+ *
+ * @param array $variables
+ *   Variables to preprocess.
+ */
+function soapbox_themes_preprocess_page(array &$variables) {
+  if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+    $variables['#attached']['library'][] = 'soapbox_themes/soapbox-themes-backend-styling';
+  }
+}

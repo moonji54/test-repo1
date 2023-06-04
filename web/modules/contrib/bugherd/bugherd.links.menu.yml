@@ -1,0 +1,6 @@
+bugherd.settings_form:
+  title: 'BugHerd settings'
+  route_name: bugherd.settings_form
+  description: 'Configure BugHerd'
+  parent: system.admin_config_development
+  weight: 99

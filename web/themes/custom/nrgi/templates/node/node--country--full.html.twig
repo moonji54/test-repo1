@@ -1,0 +1,17 @@
+{% if language_direction == 'rtl' %}
+  {% set rtl = true %}
+{% endif %}
+
+{% set classes = [
+  'c-node',
+  'c-node--type-' ~ node.bundle|clean_class,
+  rtl ? 'rtl'
+] %}
+
+<article{{ attributes.addClass(classes).setAttribute('dir', language_direction) }}>
+  {# Landing/listing banner #}
+  {% include '@nrgi/node-partials/node--page-header.html.twig' %}
+
+  {# Body #}
+  {% include '@nrgi/node-partials/node--body.html.twig' %}
+</article>

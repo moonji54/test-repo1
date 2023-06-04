@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * @file
+ * BugHerd module functions.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Laminas\Escaper\Escaper;
+use Drupal\user\Entity\User;
+use Drupal\bugherd\Form\SettingsForm;
+
+/**
+ * Implements hook_help().
+ */
+function bugherd_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the simple_user_management module.
+    case 'help.page.bugherd':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('BugHerd is an issue tracking system built for designers and web developers. This module allows you to quickly and easily add BugHerd to your Drupal site. The module allows you grant access to BugHerd by roles and even turn it off for admin pages.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_attachments().
+ *
+ * We must inline the JS so BugHerd can detect correct installation of the
+ * script.
+ */
+function bugherd_page_attachments(array &$attachments) {
+  $config = \Drupal::config('bugherd.settings');
+  $project_key = $config->get('bugherd_project_key');
+
+  if ($project_key && \Drupal::currentUser()->hasPermission('access bugherd')) {
+    $disable_on_admin = $config->get('bugherd_disable_on_admin');
+
+    // Add to the head.
+    if (!$disable_on_admin || !\Drupal::service('router.admin_context')->isAdminRoute()) {
+      $escaper = new Escaper();
+
+      $position = $config->get('bugherd_widget_position');
+      $email_required = $config->get('email_required');
+
+      $reporter_email_autofill = $config->get('reporter_email_autofill');
+      $email = '';
+      if ($reporter_email_autofill) {
+        $user = User::load(\Drupal::currentUser()->id());
+        $email = $user->getEmail();
+      }
+
+      $attachments['#attached']['drupalSettings']['bugherd'] = [
+        'bugherdconfig' => [
+          'feedback' => [
+            'tab_position' => $position,
+          ],
+          'reporter' => [
+            'email' => $email,
+            'required' => ($email_required) ? "true" : "false",
+          ],
+        ],
+        'project_key' => $escaper->escapeJs($project_key),
+      ];
+      $labels_params = SettingsForm::getBugherdFeebacksLabelParams();
+      foreach ($labels_params as $labels_param) {
+        $config_value = $config->get($labels_param['key']);
+        // Override only if the user set something in the backend.
+        if (!empty($config_value)) {
+          $attachments['#attached']['drupalSettings']['bugherd']['bugherdconfig']['feedback'][$labels_param['key']] = $config_value;
+        }
+      }
+
+      $attachments['#attached']['library'][] = 'bugherd/bugherd';
+      $attachments['#cache']['tags'][] = 'bugherd';
+    }
+  }
+}

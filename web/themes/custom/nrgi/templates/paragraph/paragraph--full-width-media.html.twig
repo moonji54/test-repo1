@@ -1,0 +1,25 @@
+{% if content.field_media|field_value %}
+  <figure class="c-full-width-media o-section">
+    <div class="o-container">
+      <div class="c-full-width-media__media-wrapper">
+        {{ content.field_media }}
+      </div>
+
+      {% if content.field_caption|field_value or content.field_credit|field_value %}
+        <figcaption class="c-full-width-media__caption">
+          {% if content.field_caption|field_value %}
+            <span>{{ content.field_caption }}</span>
+          {% endif %}
+
+          {% if content.field_caption|field_value and content.field_credit|field_value %}
+            <span>•</span>
+          {% endif %}
+
+          {% if content.field_credit|field_value %}
+            <span>{{ content.field_credit }}</span>
+          {% endif %}
+        </figcaption>
+      {% endif %}
+    </div>
+  </figure>
+{% endif %}

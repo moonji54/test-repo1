@@ -1,0 +1,35 @@
+{#
+/**
+ * @file
+ * Theme override of a datetime form wrapper.
+ *
+ * @todo Refactor when https://www.drupal.org/node/3010558 is fixed.
+ *
+ * @see template_preprocess_form_element()
+ */
+#}
+{% if errors %}
+{%
+  set label_attributes = label_attributes.addClass('has-error')
+%}
+{% endif %}
+
+<div class="form-item form-datetime-wrapper js-complex-form-item">
+{% if label_display in ['before', 'invisible'] %}
+  {{ label }}
+{% endif %}
+{{ content }}
+{% if errors %}
+  <div class="form-item__error-message">
+    {{ errors }}
+  </div>
+{% endif %}
+{% if description %}
+  <div{{ description_attributes.addClass('form-item__description') }}>
+    {{ description }}
+  </div>
+{% endif %}
+{% if label_display == 'after' %}
+  {{ label }}
+{% endif %}
+</div>

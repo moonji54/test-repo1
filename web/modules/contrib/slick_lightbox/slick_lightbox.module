@@ -1,0 +1,108 @@
+<?php
+
+/**
+ * @file
+ * Provides Slick lightbox images integration.
+ */
+
+use Drupal\slick\Entity\Slick;
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function slick_lightbox_library_info_alter(&$libraries, $extension) {
+  if ($extension === 'slick_lightbox' && $path = slick_lightbox_libraries_get_path('slick-lightbox')) {
+    $libraries['slick-lightbox']['js'] = ['/' . $path . '/dist/slick-lightbox.min.js' => []];
+    $libraries['slick-lightbox']['css']['base'] = ['/' . $path . '/dist/slick-lightbox.css' => []];
+  }
+}
+
+/**
+ * Implements hook_blazy_attach_alter().
+ */
+function slick_lightbox_blazy_attach_alter(array &$load, $attach = []) {
+  if (!empty($attach['slick_lightbox'])) {
+    $optionset = Slick::load('slick_lightbox');
+
+    // Attach default skin in the least.
+    $attach['skin'] = $optionset->getSkin() ?: 'default';
+
+    if ($json = $optionset->removeDefaultValues($optionset->getSettings())) {
+      $excludes = ['appendArrows', 'asNavFor', 'prevArrow', 'nextArrow'];
+      $excludes = array_combine($excludes, $excludes);
+
+      // The lightbox requires a separate lazy flag ignoring Slick default.
+      $json['lazyLoad'] = $optionset->getSetting('lazyLoad');
+      // To add more itemSelector, append by comma, do not nullify defaults.
+      $lightbox = [
+        'itemContainers' => ['.box', '.grid'],
+        'itemSelector' => '.slick-lightbox-trigger',
+      ];
+      $slick = array_diff_key($json, $excludes);
+
+      slick()->getModuleHandler()->alter('slick_lightbox_attach', $slick, $lightbox, $load, $attach, $optionset);
+      $load['drupalSettings']['slickLightbox'] = [
+        'lightbox' => $lightbox,
+        'slick' => $slick,
+      ];
+    }
+
+    $load['library'][] = 'slick_lightbox/load';
+    slick()->attachSkin($load, $attach);
+  }
+}
+
+/**
+ * Implements hook_blazy_lightboxes_alter().
+ */
+function slick_lightbox_blazy_lightboxes_alter(array &$lightboxes) {
+  $lightboxes[] = 'slick_lightbox';
+}
+
+/**
+ * Overrides variables for theme_blazy().
+ */
+function slick_lightbox_preprocess_blazy(&$variables) {
+  $settings = $variables['settings'];
+  if (!empty($settings['media_switch']) && $settings['media_switch'] == 'slick_lightbox') {
+    // Video's HREF points to external site, adds URL to local image.
+    // Do not rely on IMG as IMG is not there when using CSS background.
+    if (!empty($settings['box_url']) && !empty($settings['embed_url'])) {
+      // Unlike Colorbox, Photobox which can handle video, Slick Lightbox,
+      // like PhotoSwipe, needs a hand.
+      $variables['url_attributes']['data-box-url'] = $settings['box_url'];
+    }
+  }
+}
+
+/**
+ * Implements hook_blazy_settings_alter().
+ */
+function slick_lightbox_blazy_settings_alter(array &$build, $items) {
+  $settings = &$build['settings'];
+  // Tell Blazy we are supporting rich box: local video within lightbox.
+  if (!empty($settings['media_switch']) && $settings['media_switch'] == 'slick_lightbox') {
+    $settings['_richbox'] = TRUE;
+  }
+}
+
+/**
+ * Provides a wrapper to replace deprecated libraries_get_path() at ease.
+ *
+ * @todo replace with blazy_libraries_get_path() post blazy:8.x-2.0.
+ */
+function slick_lightbox_libraries_get_path($name, $base_path = FALSE) {
+  return function_exists('blazy_libraries_get_path') ? blazy_libraries_get_path($name, $base_path) : FALSE;
+}
+
+/**
+ * Implements hook_help().
+ */
+function slick_lightbox_help($route_name) {
+  if ($route_name == 'help.page.slick_lightbox') {
+    $output = file_get_contents(dirname(__FILE__) . '/README.md');
+    // @todo remove check once Blazy has stable release.
+    return function_exists('blazy_parse_markdown') ? blazy_parse_markdown($output) : '<pre>' . $output . '</pre>';
+  }
+  return '';
+}

@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Soapbox Content Labels module.
+ */
+
+/**
+ * Implements hook_views_plugins_filter_alter().
+ */
+function soapbox_content_labels_views_plugins_filter_alter(array &$plugins) {
+  $plugins['taxonomy_index_tid']['class'] = $plugins['content_label_taxonomy_index_tid']['class'];
+}

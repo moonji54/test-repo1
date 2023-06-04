@@ -1,0 +1,5 @@
+name: 'Soapbox nodes'
+type: module
+description: 'Node preprocessors and Twig extensions commonly used in all projects'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Custom'

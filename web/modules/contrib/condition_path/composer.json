@@ -1,0 +1,27 @@
+{
+  "name": "drupal/condition_path",
+  "type": "drupal-module",
+  "description": "Adds condition plugin based on path, supporting included and excluded paths simultaneously.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/condition_path",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "Lennart Van Vaerenbergh",
+      "homepage": "https://www.drupal.org/u/fernly",
+      "email": "lennart@vaerenbergh.com",
+      "role": "Maintainer"
+    }
+  ],
+  "require": {
+    "drupal/core": "^9 || ^10",
+    "ext-mbstring": "*",
+    "php": "^7.1 || ^8.0"
+  },
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/condition_path",
+    "source": "https://git.drupalcode.org/project/condition_path"
+  }
+}

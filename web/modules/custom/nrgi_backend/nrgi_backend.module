@@ -1,0 +1,31 @@
+<?php
+/**
+ * @file
+ * Contains nrgi_backend.module.
+ */
+
+use Drupal\editor\Entity\Editor;
+
+
+// Includes.
+// Custom admin css preprocess.
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_backend', 'inc', 'nrgi_backend.theme');
+
+// Node form alter.
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_backend', 'inc', 'nrgi_backend.node_form');
+
+// Paragraph form alter.
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_backend', 'inc', 'nrgi_backend.paragraph_form');
+
+/**
+ * Load our theme's CK Editor CSS file.
+ *
+ * Implements hook_ckeditor_css_alter().
+ */
+function nrgi_backend_ckeditor_css_alter(array &$css, Editor $editor) {
+  $css[] = \Drupal::service('extension.list.theme')
+             ->getPath('nrgi') . '/assets/css/ckeditor-style.css';
+}

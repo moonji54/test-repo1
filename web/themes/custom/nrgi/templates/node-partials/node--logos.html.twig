@@ -1,0 +1,11 @@
+{% if item.logo %}
+  <a class="c-meta-rows__logo" href="{{ item.link }}"
+     title="{{ 'Visit'|t ~ ' ' ~ item.title ?: 'organisation'|t }}"
+     target="{{ item.is_external ? '_blank' : '' }}">
+    {% if item.logo %}
+      {{ item.logo }}
+    {% else %}
+      {{ item.title }}
+    {% endif %}
+  </a>
+{% endif %}

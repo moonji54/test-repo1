@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_filters.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function soapbox_filters_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the soapbox_filters module.
+    case 'help.page.soapbox_filters':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Exposed filters for Soapbox') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function soapbox_filters_theme_suggestions_form_element_label_alter(
+  array &$suggestions,
+  array $variables
+) {
+  if (!is_array($variables) || !isset($variables['element']['#id'])) {
+    return;
+  }
+
+  // Add template suggestion for tags full view mode only.
+  if (strpos($variables['element']['#id'], 'edit-active-filter-') === 0) {
+    $suggestions[] = 'form_element_label__active_filter';
+  }
+}
+
+/**
+ * Alter the mapping of Search API data types to their default Views handlers.
+ */
+function soapbox_filters_search_api_views_handler_mapping_alter(array &$mapping) {
+  $mapping['integer']['filter']['id'] = 'entityreference_search_api_filter';
+}

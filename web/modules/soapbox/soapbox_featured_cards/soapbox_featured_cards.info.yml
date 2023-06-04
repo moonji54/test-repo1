@@ -1,0 +1,5 @@
+name: 'Soapbox Featured Cards'
+type: module
+description: 'Helper services for featured cards.'
+core_version_requirement: ^8.8.0 || ^9.0 || ^10.0
+package: 'Soapbox'

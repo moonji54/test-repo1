@@ -1,0 +1,14 @@
+{
+    "name": "drupal/bugherd",
+    "type": "drupal-module",
+    "description": "BugHerd is an issue tracking system built for designers and web developers. This module allows you to quickly and easily add BugHerd to your Drupal site. The module allows you grant access to BugHerd by roles and even turn it off for admin pages.",
+    "keywords": ["Drupal"],
+    "license": "GPL-2.0+",
+    "homepage": "https://www.drupal.org/project/bugherd",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/bugherd",
+        "source": "http://cgit.drupalcode.org/bugherd"
+    },
+    "require": { }
+}

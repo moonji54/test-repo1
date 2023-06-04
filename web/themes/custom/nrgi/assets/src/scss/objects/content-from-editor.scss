@@ -1,0 +1,395 @@
+@mixin content-from-editor {
+  @include ts-body; // Fallback in case there are no <p> tags
+  color    : $primary;
+  position : relative;
+
+  p {
+    @include ts-body;
+    margin-top : var(--space-m);
+  }
+
+  h2 {
+    @include ts-heading-3;
+    margin-top : var(--space-3xl);
+  }
+
+  h3 {
+    @include ts-heading-4;
+  }
+
+  h4,
+  h5 {
+    @include ts-heading-5;
+    font-weight : 700;
+  }
+
+  h6 {
+    @include ts-sub-heading;
+    font-weight : 700;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top : var(--space-2xl);
+  }
+
+  h2 + p {
+    margin-top : var(--space-xl);
+  }
+
+  h3 + p {
+    margin-top : var(--space-l);
+  }
+
+  h4 + p {
+    margin-top : var(--space-m);
+  }
+
+  h5 + p,
+  h6 + p {
+    margin-top : var(--space-s);
+  }
+
+  h2,
+  h3 {
+    scroll-margin-top : 5rem;
+
+    @include media("<=tablet") {
+      scroll-margin-top : 4rem;
+    }
+  }
+
+  a {
+    // replace with link mixin when merged with frontend
+    color           : $ocean-2;
+    text-decoration : underline;
+    transition      : color 0.3s;
+    overflow-wrap   : break-word;
+
+    &:focus,
+    &:hover {
+      color           : $primary;
+      text-decoration : underline;
+    }
+  }
+
+  > :last-child {
+    margin-bottom : 0;
+  }
+
+  h1 + p,
+  h2 + p,
+  h3 + p,
+  h4 + p,
+  h5 + p,
+  h6 + p,
+  p + p {
+    margin-top : var(--space-m);
+  }
+
+  /* Media
+  ================================================== */
+
+  iframe,
+  img {
+    display : block;
+    width   : 100%;
+  }
+
+  .c-media {
+    margin-top : var(--space-2xl);
+
+    &--remote-video {
+      iframe {
+        aspect-ratio : 16 / 9;
+        height       : 100%;
+        width        : 100%;
+      }
+    }
+
+    &--document img {
+      height : 50px;
+      width  : auto;
+    }
+  }
+
+  figure {
+    margin-top : var(--space-2xl);
+
+    figcaption {
+      @include ts-caption;
+      box-sizing : border-box;
+      display    : inline-block;
+      margin-top : var(--space-m);
+      width      : 100%;
+    }
+
+    > .c-media {
+      margin : 0;
+    }
+
+    > .c-media + figcaption {
+      margin-top : var(--space-m);
+    }
+  }
+
+  // overriding core Drupal css - remove
+  .caption {
+    display : block;
+  }
+
+  /* Block Quotes
+  ================================================== */
+  blockquote {
+    margin : var(--space-2xl) 0 0 var(--space-m);
+
+    @include media("<=tablet") {
+      margin-left : var(--space-m);
+    }
+
+    p {
+      @include ts-heading-6;
+      color         : $secondary;
+      margin-bottom : 0;
+    }
+  }
+
+  /* Lists
+  ================================================== */
+  ol {
+    list-style : decimal;
+
+    ul {
+      list-style : disc;
+    }
+
+    ol {
+      list-style : lower-latin;
+    }
+  }
+
+  /* stylelint-disable-next-line */
+  ul {
+    list-style : disc;
+
+    ol {
+      list-style : decimal;
+    }
+  }
+
+  /* stylelint-disable-next-line */
+  ul,
+  ol {
+    @include ts-body;
+    margin : var(--space-s) 0 var(--space-s) var(--space-xl);
+
+    @include media("<=tablet") {
+      margin-left : var(--space-l);
+    }
+
+    ul,
+    ol {
+      margin : var(--space-s) 0 var(--space-s) var(--space-xl);
+
+      @include media("<=tablet") {
+        margin-left : var(--space-l);
+      }
+    }
+
+    li {
+      margin-bottom : var(--space-s);
+
+      &::marker {
+        color : $turquoise-light;
+      }
+    }
+  }
+
+  /* Tables
+  ================================================== */
+  table {
+    @include ts-caption;
+    border-collapse : collapse;
+    border-spacing  : 0;
+    text-align      : left;
+
+    // Style tables with no width attribute to be 100% width;
+    &:not([width]) {
+      width : 100%;
+    }
+
+    caption {
+      caption-side : bottom;
+      display      : table-caption;
+      margin-top   : var(--space-m);
+      text-align   : left;
+    }
+
+    td,
+    th {
+      box-sizing : border-box;
+    }
+
+    th {
+      @include ts-caption($bold : true);
+      padding : 0 var(--space-s) var(--space-s) 0;
+    }
+
+    td {
+      min-width : 5rem;
+      padding   : var(--space-s) var(--space-s) var(--space-m) 0;
+
+      *:first-child {
+        margin-top : 0;
+      }
+
+      ul,
+      ol {
+        li {
+          margin-top : 0.75rem;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-top : 1px solid $grey-light;
+
+        &:last-child {
+          border-bottom : 1px solid $grey-light;
+        }
+      }
+    }
+
+    /* stylelint-disable-next-line */
+    a {
+      overflow-wrap : break-word;
+    }
+
+    p {
+      @include ts-caption;
+    }
+  }
+
+  .responsive-table {
+    margin-top : var(--space-2xl);
+    overflow-x : auto;
+
+    // Direct descendent tables.
+    // - Style tables with no width attribute to be 100% width;
+    /* stylelint-disable-next-line */
+    & > table:not([width]) {
+      @include media("<=tablet") {
+        min-width : 600px;
+      }
+    }
+
+    /* <table> elements with a width ending "%" */
+    /* stylelint-disable-next-line */
+    & > table[width$="%"] {
+      min-width : 600px;
+    }
+  }
+
+  /* Footnotes
+  ================================================== */
+  .see-footnote {
+    font-size         : 70%;
+    font-weight       : 700;
+    text-decoration   : none;
+    top               : 0;
+    vertical-align    : top;
+    scroll-margin-top : 4rem;
+  }
+
+  /* Standfirst/key messages
+  ================================================== */
+  .standfirst {
+    color      : $secondary;
+    margin-top : var(--space-3xl);
+    /* stylelint-disable-next-line */
+    > * {
+      @include ts-heading-6;
+    }
+
+    li {
+      &::marker {
+        color : $secondary;
+      }
+    }
+  }
+
+  /* Boxed content
+  ================================================== */
+  .boxed-text {
+    background-color : $blue-light;
+    padding          : var(--space-xl) var(--space-m);
+    /* stylelint-disable-next-line */
+    > * {
+      &:first-child {
+        margin-top : 0;
+      }
+    }
+
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top : var(--space-l);
+    }
+  }
+
+  /* Spacing rules
+  ================================================== */
+  > :first-child {
+    margin-top : 0;
+  }
+
+  /* stylelint-disable-next-line */
+  :is(.responsive-table, figure, blockquote, .c-media, .standfirst) + * {
+    margin-top : var(--space-2xl);
+  }
+
+  * :last-child {
+    margin-bottom : 0;
+  }
+
+  /* Miscellaneous
+  ================================================== */
+  address {
+    @include ts-body;
+    font-style : italic;
+  }
+
+  big {
+    font-size : 120%;
+  }
+
+  small {
+    font-size : 80%;
+  }
+
+  cite {
+    font-weight : 700;
+  }
+
+  q {
+    font-style : italic;
+  }
+
+  code,
+  var {
+    font-family : Consolas, monospace;
+  }
+
+  div {
+    margin-top : var(--space-2xl);
+  }
+}
+
+.o-content-from-editor {
+  @include content-from-editor;
+}

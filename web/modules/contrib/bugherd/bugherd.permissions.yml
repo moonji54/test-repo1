@@ -1,0 +1,4 @@
+administer bugherd:
+  title: 'Perform administration tasks for BugHerd.'
+access bugherd:
+  title: 'Users with this permission will have access to BugHerd.'

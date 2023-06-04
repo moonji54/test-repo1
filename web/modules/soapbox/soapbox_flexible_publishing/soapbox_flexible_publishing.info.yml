@@ -1,0 +1,9 @@
+name: 'Soapbox Flexible Publishing'
+type: module
+description: 'Builds the flexible publishing model experience'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'
+
+dependencies:
+  - form_mode_manager:form_mode_manager
+  - node:node

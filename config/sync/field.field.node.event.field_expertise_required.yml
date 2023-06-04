@@ -1,0 +1,29 @@
+uuid: a0ee04db-e234-41f2-8af4-f9fd276a3204
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_expertise_required
+    - node.type.event
+    - taxonomy.vocabulary.event_expertise_requirement
+id: node.event.field_expertise_required
+field_name: field_expertise_required
+entity_type: node
+bundle: event
+label: 'Expertise required'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      event_expertise_requirement: event_expertise_requirement
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

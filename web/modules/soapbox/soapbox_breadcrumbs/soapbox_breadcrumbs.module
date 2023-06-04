@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_breadcrumbs.module.
+ */
+
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Implements hook_help().
+ */
+function soapbox_breadcrumbs_help(
+  $route_name,
+  RouteMatchInterface $route_match
+) {
+  switch ($route_name) {
+    // Main module help for the soapbox_views module.
+    case 'help.page.soapbox_media':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Extensions and modifications to breadcrumbs.') . '</p>';
+
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_system_breadcrumb_alter().
+ */
+function soapbox_breadcrumbs_system_breadcrumb_alter(
+  Breadcrumb &$breadcrumb,
+  RouteMatchInterface $route_match,
+  array $context
+) {
+  if ($links = $breadcrumb->getLinks()) {
+    $updated = FALSE;
+
+    // Check if home is the first link.
+    foreach ($links as $key => $link) {
+      $text = $link->getText();
+      $text = (is_object($text) && $text instanceof TranslatableMarkup ? $text->render() : $text);
+      if (is_string($text) && in_array($text, ['Home', 'Node'])) {
+
+        // Remove link from breadcrumb link.
+        unset($links[$key]);
+        $updated = TRUE;
+      }
+    }
+
+    // If we have made a change, reset keys and resave.
+    if ($updated) {
+      $links = array_values($links);
+
+      // Save breadcrumb.
+      $breadcrumb = new Breadcrumb();
+      $breadcrumb->setLinks($links);
+    }
+  }
+
+  // Add cache contexts to breadcrumbs.
+  $breadcrumb->addCacheContexts(['url.path']);
+}
+
+/**
+ * Implements hook_block_build_alter().
+ */
+function soapbox_breadcrumbs_block_build_alter(
+  array &$build,
+  BlockPluginInterface $block
+) {
+
+  // Add the 'url.path' cache context to breadcrumb block.
+  if (strpos($block->getBaseId(), 'breadcrumb') !== FALSE) {
+    $build['#cache']['contexts'][] = 'url.path';
+  }
+}

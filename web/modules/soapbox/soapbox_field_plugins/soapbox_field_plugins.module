@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_field_plugins.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function soapbox_field_plugins_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the soapbox_field_plugins module.
+    case 'help.page.soapbox_field_plugins':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('A module to provide additional field types, formatters, and widgets.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function soapbox_field_plugins_theme() {
+  return [
+    'raw_formatter' => [
+      'variables' => [
+        'value' => [],
+      ],
+      'template'  => 'raw-formatter',
+    ],
+  ];
+}

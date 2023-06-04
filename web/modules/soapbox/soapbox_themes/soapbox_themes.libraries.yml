@@ -1,0 +1,5 @@
+# Custom module library for general purposes.
+soapbox-themes-backend-styling:
+  css:
+    theme:
+      assets/css/soapbox-themes-backend.css: {}

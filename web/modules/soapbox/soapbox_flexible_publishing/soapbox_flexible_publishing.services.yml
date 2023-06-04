@@ -1,0 +1,14 @@
+services:
+  soapbox_flexible_publishing.route_subscriber:
+    class: Drupal\soapbox_flexible_publishing\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  soapbox_flexible_publishing.manager:
+    class: Drupal\soapbox_flexible_publishing\FlexiblePublishingManager
+    arguments: []
+  soapbox_flexible_publishing.node_type_form_alter:
+    class: Drupal\soapbox_flexible_publishing\Form\FlexiblePublishingNodeTypeFormAlter
+    arguments: []
+  soapbox_flexible_publishing.node_edit_form_alter:
+    class: Drupal\soapbox_flexible_publishing\Form\FlexiblePublishingNodeEditFormAlter
+    arguments: []

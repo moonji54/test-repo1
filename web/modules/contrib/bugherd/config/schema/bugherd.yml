@@ -1,0 +1,14 @@
+bugherd.settings:
+  type: config_object
+  label: 'Global settings for the Bugherd module'
+  mapping:
+    bugherd_project_key:
+      type: string
+      label: 'BugHerd Project key'
+    bugherd_widget_position:
+      type: string
+      label: 'Position of the BugHerd widget'
+    bugherd_disable_on_admin:
+      type: string
+      label: "Disable on admin pages"
+

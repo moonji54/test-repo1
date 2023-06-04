@@ -1,0 +1,9 @@
+name: 'Soapbox Filters'
+type: module
+description: 'Exposed filters for Soapbox'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'
+
+# Require BEF 5.x.
+dependencies:
+  - better_exposed_filters:better_exposed_filters (>=5)

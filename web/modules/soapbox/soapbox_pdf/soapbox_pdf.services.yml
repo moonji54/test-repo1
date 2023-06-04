@@ -1,0 +1,8 @@
+services:
+  logger.channel.soapbox_pdf:
+    parent: logger.channel_base
+    arguments: ['soapbox_pdf']
+
+  plugin.manager.pdf_generator:
+    class: Drupal\soapbox_pdf\Plugin\PdfGeneratorManager
+    parent: default_plugin_manager

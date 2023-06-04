@@ -1,0 +1,5 @@
+services:
+  soapbox_routes.event_subscriber:
+    class: Drupal\soapbox_routes\EventSubscriber\SoapboxRoutesSubscriber
+    tags:
+      - { name: event_subscriber }

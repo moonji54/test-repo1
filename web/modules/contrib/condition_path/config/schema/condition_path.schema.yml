@@ -1,0 +1,7 @@
+# Schema for the configuration files of the Condition Path module.
+
+condition.plugin.request_path_inclexcl:
+  type: condition.plugin
+  mapping:
+    pages:
+      type: string

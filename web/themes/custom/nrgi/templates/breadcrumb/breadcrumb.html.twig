@@ -1,0 +1,16 @@
+{% if breadcrumb %}
+  <ul class="c-breadcrumbs__list">
+    <li class="c-breadcrumbs__item">
+      <a href="{{ url('<front>') }}" class="c-breadcrumbs__link">{{ "Home"|t }}</a>
+    </li>
+    {% for item in breadcrumb %}
+      <li class="c-breadcrumbs__item">
+        {% if item.url %}
+          <a href="{{ item.url }}" class="c-breadcrumbs__link">{{ item.text }}</a>
+        {% else %}
+          <span class="c-breadcrumb__label">{{ item.text }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

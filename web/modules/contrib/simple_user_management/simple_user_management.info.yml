@@ -1,0 +1,12 @@
+name: Simple User Management
+type: module
+description: Interface for clients to manage their users for approving and delegating roles.
+core_version_requirement: ^8 || ^9 || ^10
+package: Custom
+dependencies:
+  - role_delegation:role_delegation
+
+# Information added by Drupal.org packaging script on 2022-12-01
+version: '8.x-1.5'
+project: 'simple_user_management'
+datestamp: 1669874525

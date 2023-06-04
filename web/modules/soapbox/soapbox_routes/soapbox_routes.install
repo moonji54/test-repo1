@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_routes.install.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Set authenticated and anonymous user roles to view admin theme.
+ *
+ * @param $sandbox
+ *
+ * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+ *
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ */
+function soapbox_routes_update_8001(&$sandbox) {
+  $roles = ['anonymous', 'authenticated'];
+  foreach ($roles as $role) {
+    $role_entity = Role::load($role);
+    $role_entity->grantPermission('view the administration theme');
+    if (!$role_entity->save()) {
+      return t('User role could not be updated!');
+    }
+  }
+
+  return t('User roles updated successfully!');
+}

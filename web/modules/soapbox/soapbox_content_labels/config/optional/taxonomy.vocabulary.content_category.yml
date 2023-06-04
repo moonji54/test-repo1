@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - soapbox_flexible_publishing
+name: Content Category
+vid: content_category
+description: 'Groups content labels into categories'
+hierarchy: 0
+weight: 0

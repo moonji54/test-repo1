@@ -1,0 +1,12 @@
+name: Context Active Trail
+type: module
+description: Set the active trail based on context.
+package: Context
+core_version_requirement: ^8 || ^9
+dependencies:
+  - context:context
+
+# Information added by Drupal.org packaging script on 2021-12-13
+version: '8.x-2.0-rc3'
+project: 'context_active_trail'
+datestamp: 1639373498

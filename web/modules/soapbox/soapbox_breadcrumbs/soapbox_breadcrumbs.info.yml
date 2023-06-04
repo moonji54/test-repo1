@@ -1,0 +1,5 @@
+name: 'Soapbox breadcrumbs'
+type: module
+description: 'Extensions and modifications to breadcrumbs.'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'

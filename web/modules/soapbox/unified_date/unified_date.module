@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Contains unified_date.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_help().
+ */
+function unified_date_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the unified_date module.
+    case 'help.page.unified_date':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('A module to store a date field value in a unified date field on the base node table for multiple content type listing sorting.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function unified_date_entity_base_field_info(EntityTypeInterface $entity_type) {
+  $fields = [];
+
+  // Whether the hook implementation was called for our group type.
+  if ($entity_type->id() == 'node') {
+
+    // Create a base field for the unified date.
+    $fields['unified_date'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(t('Unified date'))
+      ->setDescription(t('The unified date field.'))
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE)
+      ->setSettings([
+        'max_length' => 11,
+      ]);
+  }
+
+  return $fields;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function unified_date_node_presave(EntityInterface $entity) {
+  // Get the date only, don't save. Entity will be saved in the subsequent
+  // lifecycle of the entity.
+  $unified_date_manager = \Drupal::service('unified_date.manager');
+  $entity->set('unified_date', $unified_date_manager->getUnifiedDate($entity));
+}

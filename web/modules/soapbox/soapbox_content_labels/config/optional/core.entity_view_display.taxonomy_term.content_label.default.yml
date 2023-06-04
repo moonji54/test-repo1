@@ -1,0 +1,15 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.content_label.field_category
+    - taxonomy.vocabulary.content_label
+id: taxonomy_term.content_label.default
+targetEntityType: taxonomy_term
+bundle: content_label
+mode: default
+content: {  }
+hidden:
+  description: true
+  field_category: true
+  search_api_excerpt: true

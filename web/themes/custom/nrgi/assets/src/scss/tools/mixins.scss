@@ -1,0 +1,124 @@
+/*
+    ===============================
+    COMMON CODE
+    ===============================
+*/
+@mixin accessible-hide() {
+  clip        : rect(0 0 0 0);
+  clip-path   : inset(50%);
+  height      : 1px;
+  overflow    : hidden;
+  position    : absolute;
+  white-space : nowrap;
+  width       : 1px;
+}
+
+@mixin checkbox-hide {
+  border   : 0;
+  clip     : rect(0 0 0 0);
+  height   : 1px;
+  margin   : -1px;
+  overflow : hidden;
+  padding  : 0;
+  position : absolute;
+  width    : 1px;
+}
+
+/* stylelint-disable */
+$z-index : (
+    footer: 10,
+    header: 5,
+    hero-content: 1,
+    hero-image: 1,
+    breadcrumbs: 1,
+    hero-overlay: 1,
+    hero-text-wrapper: 1,
+    hero-image-wrapper: 1,
+    languages-overlay: 10,
+    localtasks: 3,
+    menu: 2,
+    mega-nav: 20,
+    toc: 25,
+);
+
+@function z-index($key) {
+  @return map-get($z-index, $key);
+}
+
+@mixin z-index($key) {
+  z-index : z-index($key);
+}
+
+/*
+    ===============================
+    TYPOGRAPHY
+    ===============================
+*/
+
+/* Font families */
+@mixin sans-heading {
+  font-family : "Cabinet Grotesk", sans-serif;
+}
+
+@mixin sans-body {
+  font-family : "Noto Sans", sans-serif;
+}
+
+/*
+    ===============================
+    MISC
+    ===============================
+*/
+@mixin placeholder($color) {
+  &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color   : $color;
+    opacity : 1;
+  }
+  &::-moz-placeholder { /* Firefox 19+ */
+    color   : $color;
+    opacity : 1;
+  }
+  &:-ms-input-placeholder { /* IE 10+ */
+    color   : $color;
+    opacity : 1;
+  }
+  &:-moz-placeholder { /* Firefox 18- */
+    color   : $color;
+    opacity : 1;
+  }
+}
+
+@mixin selection-background($color) {
+  &::selection {
+    background : $color;
+  }
+  &::-moz-selection {
+    background : $color;
+  }
+}
+
+@mixin underlined($color: $white, $offset: 5px, $thickness: 1px) {
+  text-decoration           : underline;
+  text-decoration-color     : transparent;
+  text-decoration-thickness : $thickness;
+  text-underline-offset     : $offset;
+  transition                : all 0.3s;
+
+  &:hover,
+  &:focus {
+    text-decoration-color : $color;
+  }
+}
+
+@mixin underlined-off($color: $white, $offset: 5px, $thickness: 1px) {
+  text-decoration           : underline;
+  text-decoration-color     : $color;
+  text-decoration-thickness : $thickness;
+  text-underline-offset     : $offset;
+  transition                : all 0.3s;
+
+  &:hover,
+  &:focus {
+    text-decoration-color : transparent;
+  }
+}

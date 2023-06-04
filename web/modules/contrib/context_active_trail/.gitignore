@@ -1,0 +1,6 @@
+# Sandbox website for testing the module.
+sandbox
+!sandbox/.lando.yml
+
+# JetBrains IDE files.
+.idea

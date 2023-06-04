@@ -1,0 +1,37 @@
+/** @define c-breadcrumbs */
+.c-breadcrumbs {
+  $c : &;
+
+  &__list {
+    display   : flex;
+    flex-wrap : wrap;
+  }
+
+  &__item {
+    @include ts-breadcrumbs;
+    color    : $white;
+    display  : flex;
+    position : relative;
+  }
+
+  &__item:not(:last-child) {
+    &:after {
+      content  : url("../img/right-arrow.svg");
+      margin   : 0 0.5rem;
+      position : relative;
+      top      : 0.0625rem;
+    }
+
+    /* stylelint-disable-next-line */
+    .rtl & {
+      /* stylelint-disable-next-line */
+      &:after {
+        transform : rotateY(180deg);
+      }
+    }
+  }
+
+  &__link {
+    @include underlined;
+  }
+}

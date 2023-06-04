@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Soapbox Flexible Publishing install.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Implements hook_install().
+ */
+function soapbox_flexible_publishing_install($is_syncing) {
+  soapbox_flexible_publishing_update_9001();
+}
+
+/**
+ * Install template base field onto node entity.
+ */
+function soapbox_flexible_publishing_update_9001() {
+  /** @var \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface $definition_manager */
+  $definition_manager = \Drupal::entityDefinitionUpdateManager();
+  if (!$definition_manager->getFieldStorageDefinition('template', 'node')) {
+    $field_storage_definition = BaseFieldDefinition::create('string')
+      ->setLabel(t('Template'))
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDescription(t('The active template for this node.'))
+      ->setRevisionable(TRUE);
+    $definition_manager->installFieldStorageDefinition('template', 'node', 'soapbox_flexible_publishing', $field_storage_definition);
+  }
+}

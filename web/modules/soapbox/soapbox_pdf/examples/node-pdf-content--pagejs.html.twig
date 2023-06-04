@@ -1,0 +1,30 @@
+{#
+/**
+ * @file
+ * Soapbox_pdf theme implementation to display a PDF node page.
+ *
+ * Available variables:
+ * - header: (optional) PDF header.
+ * - node_view: Node view builder.
+ * - footer: (optional) PDF header.
+ *
+ * @see template_preprocess_node()
+ */
+#}
+
+<div class="node-pdf">
+  {# Header and footer should be at the page top to be on all pages. #}
+  {# Related article: https://www.pagedjs.org/documentation/07-generated-content-in-margin-boxes/#named-string-classical-running-headersfooters #}
+  <div class="node-pdf-header">{{ header }}</div>
+  <div class="node-pdf-footer">{{ footer }}</div>
+
+  {# To set header/footer conditionally, use if as below #}
+  {# {% if header %} #}
+  {# <div class="node-pdf-header">{{ header }}</div> #}
+  {# {% endif %} #}
+  {# {% if footer %} #}
+  {# <div class="node-pdf-footer">{{ header }}</div> #}
+  {# {% endif %} #}
+
+  <div class="node-pdf-content">{{ node_view }}</div>
+</div>

@@ -1,0 +1,15 @@
+unified_date.settings:
+  path: '/admin/config/content/unified-date'
+  defaults:
+    _form: '\Drupal\unified_date\Form\SettingsForm'
+    _title: 'Unified date settings form'
+  requirements:
+    _permission: 'administer site configuration'
+
+unified_date.bulk_update:
+  path: '/admin/config/content/unified-date/bulk-update'
+  defaults:
+    _form: '\Drupal\unified_date\Form\BulkUpdateForm'
+    _title: 'Unified date bulk update form'
+  requirements:
+    _permission: 'administer site configuration'

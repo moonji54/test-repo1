@@ -1,0 +1,11 @@
+unified_date.settings:
+  route_name: unified_date.settings
+  base_route: unified_date.settings
+  title: 'Settings'
+  weight: 10
+
+unified_date.bulk_update:
+  route_name: unified_date.bulk_update
+  base_route: unified_date.settings
+  title: 'Bulk update'
+  weight: 20

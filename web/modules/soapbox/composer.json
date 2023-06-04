@@ -1,0 +1,35 @@
+{
+  "name": "sb-dev-team/drupal_modules",
+  "description": "Provides Soapbox in-house modules to extend the site functionality.",
+  "type": "soapbox-drupal-modules",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Soapbox",
+      "email": "support@designbysoapbox.com",
+      "homepage": "https://www.designbysoapbox.com"
+    }
+  ],
+  "support": {
+    "email": "support@designbysoapbox.com"
+  },
+  "require": {
+    "composer/installers": "~1.0 || ~2.0",
+    "drupal/core": "^9.0 || ^10.0",
+    "phpro/grumphp-shim": "^1.12",
+    "cweagans/composer-patches": "^1.7"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "phpro/grumphp-shim": true
+    }
+  },
+  "extra": {
+    "patches": {
+      "drupal/core": {
+        "#3182064: Allow min & max exposed numeric/date filters to be configured": "https://git.drupalcode.org/project/drupal/-/merge_requests/2391/diffs.patch"
+      }
+    }
+  }
+}

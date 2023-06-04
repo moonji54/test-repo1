@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_views.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\file\FileInterface;
+
+/**
+ * Implements hook_help().
+ */
+function soapbox_media_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the soapbox_views module.
+    case 'help.page.soapbox_media':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Extensions and modifications to media.') . '</p>';
+
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_preprocess_media().
+ */
+function soapbox_media_preprocess_media(&$variables) {
+  $fields = $variables['media']->getFields();
+  foreach ($fields as $field_machine_name => $field) {
+    $field_type = $field->getFieldDefinition()->getType();
+    if (in_array($field_type, ['file', 'image'])) {
+      $field_result = $variables['media']->get($field_machine_name);
+      if (isset($field_result->entity)) {
+        if ($field_result->entity instanceof FileInterface) {
+          $file = $field_result->entity;
+          $variables['file_size'] = ($file->getSize()) ? format_size($file->getSize()) : '';
+          $variables['file_mimetype'] = $file->getMimeType();
+          $variables['file_name'] = $file->getFilename();
+          $filename_parts = explode('.', $variables['file_name']);
+          $variables['file_extension'] = end($filename_parts);
+          $variables['file_url'] = $file->createFileUrl();
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_responsive_image().
+ */
+function soapbox_media_preprocess_responsive_image(&$variables) {
+  if (!empty($variables['img_element']) && !empty($variables['img_element']['#attributes'])) {
+    $variables['img_element']['#attributes'] = array_merge($variables['img_element']['#attributes'],
+      [
+        'class' => ['c-media__image'],
+      ]);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function soapbox_media_theme() {
+  return [
+    'media__media_library_browser' => [
+      'base hook' => 'media',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function soapbox_media_theme_suggestions_media_alter(array &$suggestions, array $variables) {
+
+  // If this is a modal window, show an alternative view.
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name == 'entity_browser.media_entity_browser_media_library') {
+    $suggestions[] = 'media__media_library_browser';
+  }
+}

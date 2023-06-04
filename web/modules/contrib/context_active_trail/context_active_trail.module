@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for context_active_trail.
+ */
+
+use Drupal\context\ContextInterface;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\context_active_trail\ContextActiveTrail;
+
+/**
+ * Implements hook_context_update().
+ */
+function context_active_trail_context_update(ContextInterface $entity) {
+  if ($entity->original->hasReaction('active_trail')) {
+    Cache::invalidateTags([ContextActiveTrail::CACHE_TAG_BREADCRUMBS]);
+  }
+}
+
+/**
+ * Implements hook_context_delete().
+ */
+function context_active_trail_context_delete(ContextInterface $entity) {
+  if ($entity->hasReaction('active_trail')) {
+    Cache::invalidateTags([ContextActiveTrail::CACHE_TAG_BREADCRUMBS]);
+  }
+}
+
+/**
+ * Implements hook_system_breadcrumb_alter().
+ */
+function context_active_trail_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+  $breadcrumb->addCacheTags([ContextActiveTrail::CACHE_TAG_BREADCRUMBS]);
+}

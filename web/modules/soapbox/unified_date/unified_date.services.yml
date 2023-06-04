@@ -1,0 +1,7 @@
+services:
+  unified_date.manager:
+    class: Drupal\unified_date\UnifiedDateManager
+    arguments: ['@config.factory', '@entity_field.manager', '@module_handler']
+  unified_date.batch_processor:
+    class: Drupal\unified_date\UnifiedDateBatchProcessor
+    arguments: []

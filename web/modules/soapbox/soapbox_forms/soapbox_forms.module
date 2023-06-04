@@ -1,0 +1,209 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_forms.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function soapbox_forms_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.soapbox_forms':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Extensions and modifications to general forms') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function soapbox_forms_form_alter(
+  &$form,
+  FormStateInterface $form_state,
+  $form_id
+) {
+
+  // Don't apply to admin routes.
+  if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+    return;
+  }
+
+  // Exclude the given forms from applying the styles.
+  $is_excluded = FALSE;
+  if ($form_id == 'views_exposed_form') {
+    $is_excluded = TRUE;
+  }
+
+  \Drupal::moduleHandler()
+    ->alter('soapbox_forms_exclude_form', $is_excluded, $form_id);
+
+  if ($is_excluded) {
+    return;
+  }
+
+  $form['#after_build'][] = '_soapbox_forms_form_after_build';
+}
+
+/**
+ * After build function for non-views forms.
+ *
+ * @param array $form
+ *   The form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Current form state.
+ *
+ * @return array
+ *   The update form.
+ */
+function _soapbox_forms_form_after_build(
+  $form,
+  FormStateInterface $form_state
+) {
+
+  // Add classes to form itself.
+  $form['#attributes'] = $form['#attributes'] ?? [];
+  $form['#attributes'] = array_merge_recursive($form['#attributes'], [
+    'class' => [
+      'c-form',
+      'c-form--' . $form['#id'],
+    ],
+  ]);
+
+  // Add classes to subfields.
+  _soapbox_forms_form_subfields($form);
+  return $form;
+}
+
+/**
+ * Recursively find form fields.
+ *
+ * @param string $form
+ *   The form.
+ */
+function _soapbox_forms_form_subfields(&$form) {
+  foreach ($form as $field => &$settings) {
+
+    // Skip form meta data.
+    if (strpos($field, '#') === 0 || strpos($field, 'form') === 0) {
+      continue;
+    }
+
+    // Check if this is a container.
+    $is_container = FALSE;
+    foreach (array_keys($settings) as $subfield) {
+      if (substr($subfield, 0, 1) !== '#' && substr($subfield, 0,
+          4) !== 'form') {
+        $is_container = TRUE;
+      }
+    }
+
+    // Recursively add classes.
+    if ($is_container) {
+      _soapbox_forms_form_subfields($settings);
+    }
+    else {
+      _soapbox_forms_field_add_classes($field, $settings);
+    }
+  }
+}
+
+/**
+ * Add classes within form.
+ *
+ * @param string $field
+ *   Field machine name.
+ * @param array $settings
+ *   Render array field settings.
+ */
+function _soapbox_forms_field_add_classes($field, &$settings) {
+  $base_class = 'c-form-element';
+  if (isset($settings['#type']) && in_array($settings['#type'],
+      ['checkboxes', 'radios'])) {
+    foreach (array_keys($settings['#options']) as $option) {
+
+      $type = ($settings['#type'] == 'checkboxes' ? 'checkbox' : 'radio');
+
+      // Add classes to nested options.
+      $settings[$option]['#attributes'] = ($settings[$option]['#attributes'] ?? []);
+      $settings[$option]['#attributes'] = array_merge_recursive($settings[$option]['#attributes'],
+        [
+          'class' => [
+            $base_class . '__item',
+            $base_class . '__item--field-' . str_replace('_', '-', $field),
+            $base_class . '__item--type-' . $type,
+          ],
+        ]);
+
+      // Add label classes to nested options.
+      $settings[$option]['#label_attributes'] = ($settings[$option]['#label_attributes'] ?? []);
+      $settings[$option]['#label_attributes'] = array_merge_recursive($settings[$option]['#label_attributes'],
+        [
+          'class' => [
+            $base_class . '__item-label',
+            $base_class . '__item-label--field-' . str_replace('_', '-',
+              $field),
+            $base_class . '__item-label--type-' . $type,
+          ],
+        ]);
+
+      // Add wrapper classes to nested options.
+      $settings[$option]['#wrapper_attributes'] = ($settings[$option]['#wrapper_attributes'] ?? []);
+      $settings[$option]['#wrapper_attributes'] = array_merge_recursive($settings[$option]['#wrapper_attributes'],
+        [
+          'class' => [
+            $base_class . '__wrapper',
+            $base_class . '__wrapper--field-' . str_replace('_', '-',
+              $field),
+            $base_class . '__wrapper--type-' . $type,
+          ],
+        ]);
+    }
+  }
+
+  // Add classes to parent element.
+  $classes = [
+    $base_class,
+    $base_class . '--field-' . str_replace('_', '-', $field),
+  ];
+  $label_classes = [
+    $base_class . '__label',
+    $base_class . '__label--field-' . str_replace('_', '-', $field),
+  ];
+  $wrapper_classes = [
+    $base_class . '__wrapper',
+    $base_class . '__wrapper--field-' . str_replace('_', '-', $field),
+  ];
+
+  // Add field type if we know it.
+  if (isset($settings['#type'])) {
+    $type = str_replace('_', '-', $settings['#type']);
+    $classes[] = $base_class . '--type-' . $type;
+    $label_classes[] = $base_class . '-label--type-' . $type;
+    $wrapper_classes[] = $base_class . '__wrapper--type-' . $type;
+  }
+
+  // Merge into existing classes.
+  $settings['#attributes']         = $settings['#attributes'] ?? [];
+  $settings['#attributes']         = array_merge_recursive($settings['#attributes'], [
+    'class' => $classes,
+  ]);
+  $settings['#label_attributes']   = ($settings['#label_attributes'] ?? []);
+  $settings['#label_attributes']   = array_merge_recursive($settings['#label_attributes'],
+    [
+      'class' => $label_classes,
+    ]);
+  $settings['#wrapper_attributes'] = ($settings['#wrapper_attributes'] ?? []);
+  $settings['#wrapper_attributes'] = array_merge_recursive($settings['#wrapper_attributes'],
+    [
+      'class' => $wrapper_classes,
+    ]);
+}

@@ -1,0 +1,5 @@
+name: 'Soapbox PDF'
+type: module
+description: 'PDF generator'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'

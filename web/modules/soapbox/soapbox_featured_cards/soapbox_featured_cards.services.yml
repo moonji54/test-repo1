@@ -1,0 +1,4 @@
+services:
+  soapbox_featured_cards.featured_cards:
+    class: Drupal\soapbox_featured_cards\FeaturedCardsHelperService
+    arguments: ['@entity_type.manager', '@renderer']

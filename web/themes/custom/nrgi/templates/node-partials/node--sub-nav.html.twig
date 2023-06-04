@@ -1,0 +1,29 @@
+{{ attach_library('nrgi/sub-navigation') }}
+
+{% if sub_pages %}
+  <section class="c-sub-navigation">
+    <div class="c-sub-navigation__container">
+      <button class="c-sub-navigation__button js-sub-navigation-button"
+              aria-label="{{ 'Toggle sub-navigation menu'|t }}"
+              aria-expanded="false"
+              type="button">
+        <span class="c-sub-navigation__button-label">{{ 'in this section'|trans|upper }}</span>
+
+        {% include '@nrgi/svg/svg.html.twig' with {'svg': 'chevron-down', 'extra_class': 'c-sub-navigation__button-svg' } %}
+      </button>
+      <nav class="c-sub-navigation__inner" role="navigation">
+        <ul class="c-sub-navigation__list">
+          {% for nav in sub_pages %}
+            <li class="c-sub-navigation__links-item">
+              <a class="c-sub-navigation__link" href="{{ nav.url }}" title="{{ nav.title }}" class="o-icon-button">
+                {% include '@nrgi/svg/svg.html.twig' with {'svg': 'arrow-right', 'extra_class': 'c-sub-navigation__link-svg' } %}
+
+                <span class="c-sub-navigation__link-label">{{ nav.title }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  </section>
+{% endif %}

@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function soapbox_filters_update_dependencies() {
+
+  // Run 8001 here before BEF does the upgrade.
+  $dependencies['better_exposed_filters'][8001] = [
+    'soapbox_filters' => 8001,
+  ];
+
+  // Run 8002 here after BEF does the upgrade.
+  $dependencies['soapbox_filters'][8002] = [
+    'better_exposed_filters' => 8001,
+  ];
+  return $dependencies;
+}
+
+/**
+ * Change soapbox_exposed_form to bef exposed form type.
+ */
+function soapbox_filters_update_8001(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+
+  foreach ($config_factory->listAll('views.view.') as $view_config_name) {
+    $view = $config_factory->getEditable($view_config_name);
+    $displays = $view->get('display');
+    foreach ($displays as $display_name => $display) {
+
+      // Check that this is a Soapbox Exposed Form, and change to BEF form
+      // to let BEF update from 3x do its thing.
+      if (!empty($display['display_options']['exposed_form']['type']) && $display['display_options']['exposed_form']['type'] == 'soapbox_exposed_form') {
+
+        // Check individual field settings to temporarily record the ones
+        // where we want to show active filters. We need this later after BEF
+        // does its update to subsequently reapply this.
+        $temp_active_filters = [];
+        foreach ($display['display_options']['exposed_form']['options']['bef'] as $field_name => $field) {
+          if (isset($field['more_options']['show_active_filters']) && $field['more_options']['show_active_filters']) {
+            $temp_active_filters[] = $field_name;
+          }
+        }
+        $view->set('display.' . $display_name . '.display_options.exposed_form.temp_active_filters', $temp_active_filters);
+
+        // Update the exposed form to BEF.
+        $view->set('display.' . $display_name . '.display_options.exposed_form.type', 'bef');
+        $view->save(TRUE);
+      }
+    }
+  }
+}
+
+/**
+ * Convert soapbox exposed filters to BEF with active filters.
+ */
+function soapbox_filters_update_8002(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+
+  foreach ($config_factory->listAll('views.view.') as $view_config_name) {
+    $view = $config_factory->getEditable($view_config_name);
+    $displays = $view->get('display');
+    $has_update = FALSE;
+    foreach ($displays as $display_name => $display) {
+
+      // Check that this is a BEF form.
+      if (!empty($display['display_options']['exposed_form']['type']) && $display['display_options']['exposed_form']['type'] == 'bef') {
+        $temp_active_filters = [];
+        if (isset($display['display_options']['exposed_form']['temp_active_filters']) && !empty($display['display_options']['exposed_form']['temp_active_filters'])) {
+          $temp_active_filters = $display['display_options']['exposed_form']['temp_active_filters'];
+        }
+
+        // Check individual field settings.
+        foreach ($display['display_options']['exposed_form']['options']['bef']['filter'] as $field_name => $field) {
+          if (isset($field['plugin_id']) && $field['plugin_id'] == 'bef' && in_array($field_name, $temp_active_filters)) {
+
+            // Update the radio/checkboxes field to show active filters,
+            // changing plugin ID to our filter plugin.
+            $view->set('display.' . $display_name . '.display_options.exposed_form.options.bef.filter.' . $field_name . '.plugin_id', 'bef_soapbox_active_filters');
+            $view->set('display.' . $display_name . '.display_options.exposed_form.options.bef.filter.' . $field_name . '.show_active_filters', 1);
+            $has_update = TRUE;
+          }
+        }
+      }
+    }
+    if ($has_update) {
+      $view->save(TRUE);
+    }
+  }
+}

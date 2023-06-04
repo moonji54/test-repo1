@@ -1,0 +1,9 @@
+pagedjs:
+  version: VERSION
+  remote: https://github.com/pagedjs/pagedjs
+  license:
+      name: MIT
+      url: https://github.com/pagedjs/pagedjs/LICENSE.md
+      gpl-compatible: true
+  js:
+    js/paged.polyfill.js: {}

@@ -1,0 +1,5 @@
+name: Soapbox Routes
+type: module
+description: Customise Drupal routes
+package: Soapbox
+core_version_requirement: ^9 || ^10.0

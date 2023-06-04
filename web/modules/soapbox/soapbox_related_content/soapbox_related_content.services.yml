@@ -1,0 +1,4 @@
+services:
+  soapbox_related_content.related_content:
+    class: Drupal\soapbox_related_content\RelatedContentHelperService
+    arguments: ['@entity_type.manager', '@renderer']

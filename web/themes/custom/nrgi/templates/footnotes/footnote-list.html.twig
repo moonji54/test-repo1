@@ -1,0 +1,43 @@
+{% if footnotes is not empty %}
+  {% set classes = [
+    'c-footnotes',
+    'o-section'
+  ] %}
+
+  <section{{ attributes.addClass(classes) }}>
+    <div class="o-container">
+      <header class="o-section__header">
+        <h3 class="o-section__heading o-section__heading--small">{{ 'Notes'|t }}</h3>
+      </header>
+
+      <div class="c-footnotes__container">
+        <ul class="c-footnotes__list">
+          {% for fn in footnotes %}
+            {% if fn.ref_id is iterable %}
+              <li class="c-footnotes__list-item" id="{{ fn.fn_id }}">
+                <a href="#{{ fn.ref_id.0 }}" class="c-footnotes__list-label">
+                  {{ fn.value }}
+                </a>
+
+                <div class="c-footnotes__list-content">
+                  {{ fn.text|raw }}
+                </div>
+              </li>
+            {% else %}
+              {# Output normal footnote. #}
+              <li class="c-footnotes__list-item" id="{{ fn.fn_id }}">
+                <a class="c-footnotes__list-label" href="#{{ fn.ref_id }}">
+                  {{ fn.value }}
+                </a>
+
+                <div class="c-footnotes__list-content">
+                  {{ fn.text|raw }}
+                </div>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+{% endif %}

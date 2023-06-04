@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Soapbox Content Labels install.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_install().
+ */
+function soapbox_content_labels_install($is_syncing) {
+  soapbox_content_labels_setup_editor_role();
+}
+
+/**
+ * Install the editor role if not existing, and set permissions.
+ *
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ */
+function soapbox_content_labels_setup_editor_role() {
+  /** @var \Drupal\user\Entity\RoleInterface $role */
+  $role = Role::load('editor');
+  if (!$role) {
+    /** @var \Drupal\user\Entity\RoleInterface $role */
+    $role = Role::create([
+      'id' => 'editor',
+      'label' => 'Editor',
+    ]);
+  }
+
+  // Grant permission to content label only, not content categories.
+  $role->grantPermission('create terms in content_label');
+  $role->grantPermission('edit terms in content_label');
+  $role->grantPermission('delete terms in content_label');
+  $role->save();
+}

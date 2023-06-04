@@ -1,0 +1,6 @@
+services:
+  soapbox_themes.twig.extension:
+    class: Drupal\soapbox_themes\TwigExtension\ThemeTwigExtension
+    arguments: []
+    tags:
+      - { name: twig.extension }

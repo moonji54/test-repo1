@@ -1,0 +1,7 @@
+soapbox_pdf.node_pdf_page_controller:
+  path: '/node/{node}/pdf'
+  defaults:
+    _controller: '\Drupal\soapbox_pdf\Controller\NodePdfPageController::view'
+  requirements:
+    _entity_access: 'node.view'
+    node: \d+

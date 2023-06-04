@@ -1,0 +1,31 @@
+{% set classes = [
+  'c-learning-block',
+  'o-section',
+  'o-section--has-background',
+] %}
+
+<section{{ attributes.addClass(classes) }}>
+  <div class="c-learning-block__container o-container">
+    <div class="c-learning-block__inner">
+      {% if content.field_title|field_value %}
+        <h2 class="c-learning-block__title">{{ content.field_title|field_value }}</h2>
+      {% endif %}
+
+      {% if content.field_formatted_description|field_value %}
+        <div class="c-learning-block__description">{{ content.field_formatted_description|field_value }}</div>
+      {% endif %}
+
+      {% if button_link.url %}
+        <a class="c-learning-block__button o-button o-button--white" href="{{ button_link.url }}"
+           target="{{ button_link.is_external ? '_blank' : '_self' }}">
+          {% if button_link.type == 'link' %}
+            {% include '@nrgi/svg/svg.html.twig' with { 'svg' : 'arrow' } %}
+          {% elseif button_link.type == 'download' %}
+            {% include '@nrgi/svg/svg.html.twig' with { 'svg' : 'download' } %}
+          {% endif %}
+          <span>{{ button_link.title }}</span>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>

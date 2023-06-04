@@ -1,0 +1,29 @@
+uuid: 9b276535-6a37-420d-901a-5cbf93d7f558
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_board_member_type
+    - node.type.person
+    - taxonomy.vocabulary.board_member_type
+id: node.person.field_board_member_type
+field_name: field_board_member_type
+entity_type: node
+bundle: person
+label: 'Board member type'
+description: 'Select if a board member is a member of one or more of the above.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      board_member_type: board_member_type
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

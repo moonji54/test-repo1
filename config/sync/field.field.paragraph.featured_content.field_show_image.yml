@@ -1,0 +1,23 @@
+uuid: a0b40f7b-a6ef-4c0a-9043-5f72e8c1d8a6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_show_image
+    - paragraphs.paragraphs_type.featured_content
+id: paragraph.featured_content.field_show_image
+field_name: field_show_image
+entity_type: paragraph
+bundle: featured_content
+label: 'Show Image'
+description: 'Whether to show images on content cards.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

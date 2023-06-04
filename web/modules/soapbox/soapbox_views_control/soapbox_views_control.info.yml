@@ -1,0 +1,7 @@
+name: 'Soapbox Views Control'
+type: module
+description: 'Provides mechanisms for the client to override Views configurations via the Paragraph component.'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'
+dependencies:
+  - viewsreference:viewsreference

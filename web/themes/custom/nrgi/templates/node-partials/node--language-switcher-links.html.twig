@@ -1,0 +1,21 @@
+<section class="c-language-links {{ layout_modifier }} {{ colour_modifier }}">
+  <div class="c-language-links__container">
+    <div class="c-language-links__inner">
+      <h3 class="c-language-links__title">
+        {{ text|upper }}
+      </h3>
+
+      <ul class="c-language-links__links-list">
+        {% for link in links %}
+          <li class="c-language-links__links-item">
+            <a class="c-language-links__link {{ link_modifier }}" href="{{ link.url }}" title="{{ text ~ " " ~ link.title }}">
+              {% include '@nrgi/svg/svg.html.twig' with {'svg': 'arrow-right', 'extra_class': 'c-language-links__link-svg' } %}
+
+              <span class="c-language-links__link-label">{{ link.title }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>

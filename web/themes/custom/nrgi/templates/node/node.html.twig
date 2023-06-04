@@ -1,0 +1,59 @@
+{% if language_direction == 'rtl' %}
+  {% set rtl = true %}
+{% endif %}
+
+{% set classes = [
+  'c-node',
+  'c-node--type-' ~ node.bundle|clean_class,
+  rtl ? 'rtl'
+] %}
+
+<article{{ attributes.addClass(classes).setAttribute('dir', language_direction) }}>
+  {% include '@nrgi/node-partials/node--single-header.html.twig' %}
+
+  {% if node.bundle == 'publication' %}
+    {% include 'node--toc.html.twig' %}
+  {% endif %}
+
+  <div class="c-single-content{{ content.field_featured_image|field_value ? ' c-single-content--has-featured-image' }}">
+    <div class="c-single-content__top js-sidebar-container">
+      {# FEATURED IMAGE #}
+      {% if content.field_featured_image|field_value %}
+        <div class="c-single-content__image-container js-image-container">
+          <div class="c-single-content__image-wrapper">
+            {{ content.field_featured_image }}
+          </div>
+        </div>
+      {% endif %}
+
+      {#  SIDEBAR #}
+      {# Sidebar #}
+      <aside class="c-single-content__sidebar js-sidebar">
+        {% include '@nrgi/node-partials/node--sidebar.html.twig' with {
+          'layout_modifier': 'c-meta-rows--sidebar'
+        } %}
+      </aside>
+    </div>
+
+    {% if content.field_page_builder|field_value %}
+      {{ content.field_page_builder }}
+    {% endif %}
+  </div>
+
+  {# Footnotes  #}
+  {{ drupal_block('footnotes_group') }}
+
+  {# AUTHORS SECTION on resources only (publication/article) #}
+  {% if authors %}
+    {% include '@nrgi/node-partials/node--authors-bottom.html.twig' %}
+  {% endif %}
+
+  {% if meta_data %}
+    {% include '@nrgi/node-partials/node--metadata.html.twig' %}
+  {% endif %}
+
+  {#  RELATED CONTENT #}
+  {% if related_nodes is not empty %}
+    {% include 'node--related-content-block.html.twig' %}
+  {% endif %}
+</article>

@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_views.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Includes.
+ */
+\Drupal::moduleHandler()->loadInclude('soapbox_views', 'inc', 'soapbox_views.views');
+
+/**
+ * Implements hook_help().
+ */
+function soapbox_views_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the soapbox_views module.
+    case 'help.page.soapbox_views':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Extensions and modifications to views.') . '</p>';
+
+      return $output;
+
+    default:
+  }
+}

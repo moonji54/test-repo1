@@ -1,0 +1,11 @@
+unified_date.settings:
+  title: 'Unified date settings'
+  parent: system.admin_config_content
+  route_name: unified_date.settings
+  description: 'Manage the unified date settings.'
+
+unified_date.bulk_update:
+  title: 'Unified date bulk update'
+  parent: unified_date.settings
+  route_name: unified_date.bulk_update
+  description: 'Bulk update the unified dates.'

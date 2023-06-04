@@ -1,0 +1,108 @@
+<?php
+
+/**
+ * @file
+ * Contains soapbox_pdf.module.
+ */
+
+use Drupal\soapbox_pdf\Form\NodeFormPartialForm;
+use Drupal\soapbox_pdf\Form\NodeTypeFormPdfPartialForm;
+use Drupal\soapbox_pdf\Plugin\PdfGeneratorBase;
+
+/**
+ * Implements hook_theme_suggestions_alter().
+ */
+function soapbox_pdf_theme_suggestions_alter(array &$suggestions, array $variables, $hook) {
+  if (in_array($hook, ['page', 'html']) && \Drupal::routeMatch()
+    ->getRouteName() === 'soapbox_pdf.node_pdf_page_controller') {
+    $suggestions[] = $hook . '__pdf';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function soapbox_pdf_theme() {
+  return [
+    'node_pdf_content' => [
+      'variables' => [
+        'header' => NULL,
+        'node_view' => NULL,
+        'footer' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_node_pdf_content().
+ */
+function soapbox_pdf_theme_suggestions_node_pdf_content(array $variables) {
+  $node_type = $variables['node_view']['#node']->bundle();
+  $view_mode = $variables['node_view']['#view_mode'];
+  $content_types = \Drupal::config('soapbox_pdf.pdf_settings')
+    ->get('content_types') ?? [];
+  $plugin = $content_types[$node_type]['plugin'] ?? 'default';
+
+  return [
+    'node_pdf_content__' . $node_type . '__' . $view_mode,
+    'node_pdf_content__' . $plugin . '__' . $view_mode,
+    'node_pdf_content__' . $node_type,
+    'node_pdf_content__' . $view_mode,
+    'node_pdf_content__' . $plugin,
+  ];
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter node type edit form to add settings for generating PDF.
+ */
+function soapbox_pdf_form_node_type_edit_form_alter(&$form, $form_state) {
+  NodeTypeFormPdfPartialForm::formAlter($form, $form_state);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter node create/edit form to add a new button for generating PDF.
+ */
+function soapbox_pdf_form_node_form_alter(&$form, $form_state) {
+  NodeFormPartialForm::formAlter($form, $form_state);
+}
+
+/**
+ * Implements soapbox_pdf_request_alter().
+ *
+ * Alter node create/edit form to add a new button for generating PDF.
+ */
+function soapbox_pdf_soapbox_pdf_request_alter($url, array &$options, $type) {
+  if ($type === PdfGeneratorBase::REQUEST_TYPES_GENERATE) {
+    $request = \Drupal::request();
+    $site_host = $request->getSchemeAndHttpHost();
+    if (strpos($site_host, 'ddev.site') !== FALSE || TRUE) {
+      $settings = \Drupal::service('settings');
+      $ngrok_host = $settings->get('ngrok_url');
+      if ($ngrok_host) {
+        // Use the ngrok URL when using DDEV Local.
+        $options['json']['url'] = $node_url = str_replace($site_host, $ngrok_host, $options['json']['url']);
+      }
+      elseif (getenv('IS_DDEV_PROJECT') == 'true') {
+        // Local developer help message.
+        $message = t('Please see project README.md for how to set up ngrok for testing PDF generation locally in DDEV.');
+        \Drupal::messenger()->addWarning($message);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function soapbox_pdf_page_attachments_alter(array &$attachments) {
+  foreach ($attachments['#attached']['html_head'] as $key => $attachment) {
+    if (isset($attachment[1]) && $attachment[1] === 'bugherd_embed') {
+      unset($attachments['#attached']['html_head'][$key]);
+    }
+  }
+}

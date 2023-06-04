@@ -1,0 +1,27 @@
+services:
+  soapbox_nodes.excerpt.twig.extension:
+    class: Drupal\soapbox_nodes\TwigExtension\ExcerptTwigExtension
+    arguments: [ ]
+    tags:
+      - { name: twig.extension }
+  soapbox_nodes.email.twig.extension:
+    class: Drupal\soapbox_nodes\TwigExtension\EmailTwigExtension
+    arguments: [ '@renderer' ]
+    tags:
+      - { name: twig.extension }
+  soapbox_nodes.type_label.twig.extension:
+    class: Drupal\soapbox_nodes\TwigExtension\TypeLabelTwigExtension
+    arguments: [ '@renderer' ]
+    tags:
+      - { name: twig.extension }
+  soapbox_nodes.date.twig.extension:
+    class: Drupal\soapbox_nodes\TwigExtension\DateTwigExtension
+    arguments: [ '@date.formatter' ]
+    tags:
+      - { name: twig.extension }
+  soapbox_nodes.sub_pages:
+    class: Drupal\soapbox_nodes\SubPagesHelperService
+    arguments: [ '@entity_type.manager', '@renderer' ]
+  soapbox_nodes.languages:
+    class: Drupal\soapbox_nodes\LanguagesHelperService
+    arguments: [ '@entity_type.manager', '@renderer' ]

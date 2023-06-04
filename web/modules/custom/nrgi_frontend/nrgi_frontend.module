@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Contains nrgi_frontend.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.form');
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.metatag');
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.node');
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.paragraph');
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.suggestions');
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.theme');
+\Drupal::moduleHandler()
+  ->loadInclude('nrgi_frontend', 'inc', 'nrgi_frontend.views');

@@ -1,0 +1,5 @@
+name: 'Soapbox themes'
+type: module
+description: 'Provides a theme name twig extension'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'

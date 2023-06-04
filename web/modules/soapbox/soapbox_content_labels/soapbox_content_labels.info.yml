@@ -1,0 +1,9 @@
+name: 'Soapbox Content Labels'
+type: module
+description: 'Provides a global content label field'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'
+
+dependencies:
+  - node:node
+  - taxonomy:taxonomy

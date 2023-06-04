@@ -1,0 +1,11 @@
+name: BugHerd
+type: module
+description: BugHerd is an issue tracking system built for designers and web developers. This module allows you to quickly and easily add BugHerd to your Drupal site. The module allows you grant access to BugHerd by roles and even turn it off for admin pages.
+package: BugHerd
+core_version_requirement: ^8 || ^9 || ^10
+configure: bugherd.settings_form
+
+# Information added by Drupal.org packaging script on 2022-11-02
+version: '8.x-1.0'
+project: 'bugherd'
+datestamp: 1667422697

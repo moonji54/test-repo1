@@ -1,0 +1,41 @@
+# Schema for the views filter plugins.
+views.filter.unified_datetime:
+  type: views_filter
+  label: 'Numeric'
+  mapping:
+    expose:
+      type: mapping
+      label: 'Exposed'
+      mapping:
+        min_placeholder:
+          type: label
+          label: 'Min placeholder'
+        max_placeholder:
+          type: label
+          label: 'Max placeholder'
+        min_label:
+          type: label
+          label: 'Min label'
+        max_label:
+          type: label
+          label: 'Max label'
+        placeholder:
+          type: label
+          label: 'Placeholder'
+
+views.filter_value.unified_datetime:
+  type: mapping
+  label: 'Numeric'
+  mapping:
+    min:
+      type: string
+      label: 'Min'
+    max:
+      type: string
+      label: 'And max'
+    value:
+      type: string
+      label: 'Value'
+    type:
+      type: string
+      label: 'Type'

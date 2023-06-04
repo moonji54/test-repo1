@@ -1,0 +1,10 @@
+name: 'Sitemap'
+type: module
+description: 'Display a sitemap.'
+core_version_requirement: ^9.1 || ^10
+configure: sitemap.settings
+
+# Information added by Drupal.org packaging script on 2023-01-04
+version: '8.x-2.0-beta4'
+project: 'sitemap'
+datestamp: 1672799634

@@ -1,0 +1,7 @@
+name: NRGI Frontend
+type: module
+description: Provides general frontend modifications
+package: NRGI
+core_version_requirement: ^9
+dependencies:
+  - drupal:paragraphs

@@ -1,0 +1,6 @@
+approve user accounts:
+  title: 'Approve user accounts via Simple User Management'
+deactivate user accounts:
+  title: 'Deactivate user accounts via Simple User Management'
+create user accounts:
+  title: 'Create new user accounts via Simple User Management'

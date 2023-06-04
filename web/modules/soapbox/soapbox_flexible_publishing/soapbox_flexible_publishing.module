@@ -1,0 +1,285 @@
+<?php
+
+/**
+ * @file
+ * The Soapbox Flexible Publishing Model module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\Component\Utility\Crypt;
+use Drupal\node\Entity\NodeType;
+use Drupal\node\NodeInterface;
+use Drupal\node\NodeTypeInterface;
+use Drupal\views\Plugin\views\field\FieldHandlerInterface;
+use Drupal\views\ResultRow;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function soapbox_flexible_publishing_form_alter(
+  &$form,
+  FormStateInterface $form_state,
+  $form_id
+) {
+  /** @var \Drupal\soapbox_flexible_publishing\FlexiblePublishingManager $flexible_publishing_manager */
+  $flexible_publishing_manager = \Drupal::service('soapbox_flexible_publishing.manager');
+  $flexible_publishing_manager->maybeRedirectToNodeEditInFormMode();
+  if ($form_mode_selection_form = $flexible_publishing_manager->maybeSetFormModeSelectionForm($form)) {
+    return $form_mode_selection_form;
+  }
+  $form = $flexible_publishing_manager->maybeAddTemplateInfoToForm($form);
+  return $form;
+}
+
+/**
+ * Implements hook_views_data().
+ */
+function soapbox_flexible_publishing_views_data() {
+  $data = ['views' => []];
+  $data['views']['area_flexible_publishing_add_content'] = [
+    'title' => t('Flexible Publishing Add Content'),
+    'help' => t('Interface for adding content using the flexible publishing model.'),
+    'area' => [
+      'id' => 'flexible_publishing_add_content',
+    ],
+  ];
+  return $data;
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function soapbox_flexible_publishing_views_data_alter(array &$data) {
+  // Alter node form template filter to be select instead of string input.
+  if (isset($data['node_field_data']['template']['filter']['id'])) {
+    $data['node_field_data']['template']['filter'] = [
+      'id' => 'in_operator',
+      'options callback' => '_soapbox_flexible_publishing_get_form_modes',
+      'options arguments' => ['node'],
+    ];
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function soapbox_flexible_publishing_preprocess_views_view_field(&$variables) {
+  /** @var \Drupal\views\Plugin\views\field\FieldHandlerInterface $field */
+  $field = $variables['field'];
+  /** @var \Drupal\views\ResultRow $resultRow */
+  $result_row = $variables['row'];
+
+  // Preprocess template field output to show form mode labels instead of ids.
+  if (
+    $field instanceof FieldHandlerInterface
+    && $result_row instanceof ResultRow
+    && $field->field === 'template'
+  ) {
+    $template = $field->getValue($result_row) ?: 'default';
+    $modes = _soapbox_flexible_publishing_get_form_modes('node');
+    $variables['output'] = $modes[$template] ?? $template;
+  }
+}
+
+/**
+ * Helper function to get available for modes.
+ *
+ * @param string $entity_type_id
+ *   Entity type id for which return available form modes.
+ *
+ * @return array
+ *   Associative array with form mode id and label.
+ */
+function _soapbox_flexible_publishing_get_form_modes(string $entity_type_id): array {
+  $result = &drupal_static(__FUNCTION__ . '--' . Crypt::hashBase64($entity_type_id));
+  if (!$result) {
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entity_display */
+    $entity_display = \Drupal::service('entity_display.repository');
+    $result = $entity_display->getFormModeOptions($entity_type_id) ?? [];
+  }
+  return $result;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function soapbox_flexible_publishing_node_presave(EntityInterface $entity) {
+  if ($entity instanceof NodeInterface) {
+    /** @var \Drupal\soapbox_flexible_publishing\FlexiblePublishingManager $flexible_publishing_manager */
+    $flexible_publishing_manager = \Drupal::service('soapbox_flexible_publishing.manager');
+    $flexible_publishing_manager->nodePresaveSaveTemplate($entity);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for \Drupal\node\NodeTypeForm.
+ */
+function soapbox_flexible_publishing_form_node_type_form_alter(
+  &$form,
+  FormStateInterface $form_state
+) {
+  /** @var \Drupal\soapbox_flexible_publishing\Form\FlexiblePublishingNodeTypeFormAlter $node_type_form_alter */
+  $node_type_form_alter = \Drupal::service('soapbox_flexible_publishing.node_type_form_alter');
+  $node_type_form_alter->formAlter($form, $form_state);
+}
+
+/**
+ * Entity builder to save the node type form template options.
+ *
+ * @see soapbox_flexible_publishing_form_node_type_form_alter()
+ */
+function soapbox_flexible_publishing_form_node_type_form_builder(
+  $entity_type,
+  NodeTypeInterface $type,
+  &$form,
+  FormStateInterface $form_state
+) {
+  /** @var \Drupal\soapbox_flexible_publishing\Form\FlexiblePublishingNodeTypeFormAlter $node_type_form_alter */
+  $node_type_form_alter = \Drupal::service('soapbox_flexible_publishing.node_type_form_alter');
+  $node_type_form_alter->formAlterSave($entity_type, $type, $form, $form_state);
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function soapbox_flexible_publishing_entity_base_field_info(
+  EntityTypeInterface $entity_type
+) {
+  $fields = [];
+  if ($entity_type->id() == 'node') {
+    $fields['template'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Template'))
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDescription(t('The active template for this node.'))
+      ->setRevisionable(TRUE);
+  }
+  return $fields;
+}
+
+/**
+ * Implements hook_theme_suggestions_alter().
+ */
+function soapbox_flexible_publishing_theme_suggestions_alter(
+  array &$suggestions,
+  array $variables,
+  $hook
+) {
+  if (in_array($hook, ['node', 'page'])) {
+    $template = FALSE;
+    if (isset($variables['elements']['#node'])) {
+      /** @var \Drupal\node\NodeInterface $node */
+      $node = $variables['elements']['#node'];
+      $template = $node->get('template')->value;
+    }
+    else {
+      $route_match = \Drupal::routeMatch();
+      $node = $route_match->getParameter('node');
+      if ($node instanceof NodeInterface) {
+        $template = $node->get('template')->value;
+      }
+    }
+
+    // Only add suggestions if this node has a template.
+    if ($template) {
+
+      // Ensure the selected template is still an allowed template.
+      /** @var \Drupal\soapbox_flexible_publishing\FlexiblePublishingManager $flexible_publishing_manager */
+      $flexible_publishing_manager = \Drupal::service('soapbox_flexible_publishing.manager');
+      if ($node_type = $flexible_publishing_manager->getCurrentNodeType()) {
+        $settings = $node_type->getThirdPartySettings('soapbox_flexible_publishing');
+        if (
+          isset($settings['use_templates'])
+          && $settings['use_templates']
+          && $settings['form_modes_as_templates']
+          && in_array($template, $settings['form_modes_as_templates'])
+        ) {
+
+          // Reset suggestions, add each new option in between to maintain
+          // existing specificity, adding in this new layer of specificity.
+          $existing_suggestions = $suggestions;
+          $suggestions = [];
+          foreach ($existing_suggestions as $suggestion) {
+            $suggestions[] = $suggestion;
+            $suggestions[] = $suggestion . '__' . $template;
+          }
+
+          // Add top level template suggestion.
+          array_unshift($suggestions, $hook . '__' . $template);
+
+          // Reset keys.
+          $suggestions = array_values($suggestions);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function soapbox_flexible_publishing_menu_local_tasks_alter(
+  &$data,
+  $route_name
+) {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface) {
+
+    $type = NodeType::load($node->getType());
+    $settings = $type->getThirdPartySettings('soapbox_flexible_publishing');
+    if (isset($settings['use_templates']) && $settings['use_templates'] && $settings['disable_form_mode_contextual_links']) {
+      foreach ($data['tabs'] as &$tab) {
+        foreach ($tab as $task_name => &$task) {
+          if (!str_starts_with($task_name, 'form_mode_manager')) {
+            continue;
+          }
+
+          if (!$task['#link']['url'] instanceof Url) {
+            continue;
+          }
+
+          // Remove link to default form mode when this uses templates.
+          if ($task['#link']['url']->getRouteName() === 'entity.node.edit_form') {
+            $task['#access'] = FALSE;
+          }
+
+          // Remove 'Edit as (form mode)' that are not allowed in Secondary
+          // Local Tasks.
+          if (str_starts_with($task['#link']['url']->getRouteName(), 'entity.node.edit_form.')) {
+            $form_mode = str_replace('entity.node.edit_form.', '',
+              $task['#link']['url']->getRouteName());
+            if (!in_array($form_mode, $settings['form_modes_as_templates'])) {
+              $task['#access'] = FALSE;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_operation_alter().
+ */
+function soapbox_flexible_publishing_entity_operation_alter(
+  array &$operations,
+  EntityInterface $entity
+) {
+  if ($entity instanceof NodeInterface) {
+    $type = NodeType::load($entity->getType());
+    $settings = $type->getThirdPartySettings('soapbox_flexible_publishing');
+    if (isset($settings['use_templates']) && $settings['use_templates'] && $settings['disable_form_mode_contextual_links']) {
+
+      // Remove the 'Edit as (form mode)' from Operations list.
+      /** @var \Drupal\Core\Entity\EntityDisplayRepository $entity_display */
+      $entity_display = \Drupal::service('entity_display.repository');
+      $options = $entity_display->getFormModeOptions('node');
+      if ($options && $form_modes = array_keys($options)) {
+        $operations = array_diff_key($operations, array_flip($form_modes));
+      }
+    }
+  }
+}

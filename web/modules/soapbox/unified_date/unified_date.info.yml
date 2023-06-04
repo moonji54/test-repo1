@@ -1,0 +1,8 @@
+name: 'Unified date'
+type: module
+description: 'A module to store a date field value in a unified date field on the base node table for multiple content type listing sorting.'
+core_version_requirement: ^9.0 || ^10.0
+package: 'Soapbox'
+dependencies:
+  - node:node
+  - datetime:datetime

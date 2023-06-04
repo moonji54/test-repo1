@@ -1,0 +1,62 @@
+{{ attach_library('nrgi/filters') }}
+
+{# Filters, submit, reset, and other action buttons #}
+{% if form['#filters'] is not empty %}
+  <div class="c-listing__search">
+    {% if attribute(form, 'query') is defined %}
+      {{ attribute(form, 'query') }}
+    {% endif %}
+  </div>
+
+  <div class="c-listing__filters-dropdowns js-filter-dropdowns">
+    {% for key in form['#filters'] %}
+      {% if attribute(form, key) is defined and key not in ['active_filters', 'query'] %}
+        {{ attribute(form, key) }}
+      {% endif %}
+    {% endfor %}
+
+    {% for key in form['#submit_buttons'] %}
+      {% if attribute(form, key) is defined %}
+        <div class="c-filter__submit-buttons">
+          {{ attribute(form, key) }}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {# Active filters are configured using BEF #}
+    {% if form.active_filters is not empty %}
+      {{ attribute(form, 'active_filters') }}
+      {{ attach_library('soapbox_filters/active-filters') }}
+    {% endif %}
+  </div>
+{% endif %}
+
+{# Sorters #}
+{% if form['#sorters'] is not empty %}
+  <div class="c-sorters">
+
+    {% for key in form['#sorters'] %}
+      {% if attribute(form, key) is defined %}
+        {{ attribute(form, key) }}
+      {% endif %}
+    {% endfor %}
+
+  </div>
+{% endif %}
+
+{# Set search keyword as hidden field to show term on input after applying filters. #}
+{% if attribute(form, 'query') is defined %}
+  {% set search_field = attribute(form, 'query') %}
+  <input type="hidden" name="{{ search_field['#name'] }}" value="{{ search_field['#value'] }}"/>
+{% endif %}
+
+{# Output whatever is left unrendered such as hidden fields. #}
+{% for key, value in form %}
+  {% if
+    not key starts with '#'
+    and key not in form['#filters']
+    and key not in form['#sorters']
+    and key not in form['#submit_buttons'] %}
+    {{ value }}
+  {% endif %}
+{% endfor %}
